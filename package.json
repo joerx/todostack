@@ -1,0 +1,17 @@
+{
+  "name": "todostack",
+  "version": "1.0.0",
+  "description": "Sample full stack app for playing with containers and things",
+  "main": "server.js",
+  "repository": "git@github.com:joerx/todostack.git",
+  "author": "Joerg Henning",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "express": "^4.16.1",
+    "hbs": "^4.0.1",
+    "http-errors": "^1.6.2",
+    "yargs": "^9.0.1"
+  }
+}
