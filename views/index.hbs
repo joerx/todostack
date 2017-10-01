@@ -1,2 +1,24 @@
-<h1>{{title}}</h1>
-<p>Welcome to this awsome app!</p>
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>TODO App</title>
+  </head>
+  <body>
+    <h1>My TODO List</h1>
+    <div>
+      <form id="todo-form">
+        <input type="text" name="item" id="todo-form-entry"/>
+        <button type="submit" id="todo-form-submit">Add</button>
+      </form>
+    </div>
+    <div>
+      <ul id="todo-list">
+        {{#each todos}}
+        <li>{{this.item}}</li>
+        {{/each}}
+      </ul>
+    </div>
+
+    <script src="/assets/scripts/main.js"></script>
+  </body>
+</html>

@@ -5,14 +5,29 @@ const bodyParser = require('body-parser');
 const error = require('http-errors');
 const config = require('./configure');
 const pkg = require('./package.json');
+const db = require('./db');
+const uuid = require('uuid/v1');
+const {ObjectID} = require('mongodb');
+
+process.on('SIGINT', function() {
+    console.log('bye');
+    process.exit();
+});
 
 const app = express()
 
 app.use(bodyParser.json());
 app.set('view engine', 'hbs');
 
-
 app.listen(config.port, () => console.log('Ready on :'+config.port));
+
+const findAll = async () => {
+    const conn = await db();
+    const collection = conn.collection('todos');
+    const results = await collection.find({}).limit(20).toArray();
+    conn.close();
+    return results;
+}
 
 const api = express.Router();
 
@@ -23,16 +38,53 @@ api.get('/', (req, res, next) => {
     });
 });
 
-api.get('/todos', (req, res, next) => {
-    next(error.NotImplemented());
+api.get('/todos', async (req, res, next) => {
+    try {
+        const results = await findAll();
+        res.json(results);
+    } catch(err) {
+        next(err);
+    }
 });
 
-api.get('/todos/:id', (req, res, next) => {
-    next(error.NotImplemented());
+api.get('/todos/:id', async (req, res, next) => {
+    try {
+        const id = req.params.id;
+        
+        console.log('finding', id);
+
+        const conn = await db();
+        const collection = conn.collection('todos');
+
+        const result = await collection.findOne({_id: ObjectID(id)});
+        conn.close();
+        
+        console.log(result);
+        res.json(result);
+
+    } catch(err) {
+        next(err);
+    }
 });
 
-api.post('/todos', (req, res, next) => {
-    next(error.NotImplemented());
+api.post('/todos', async (req, res, next) => {
+    try {
+        const data = req.body;
+
+        console.log('inserting', data);
+
+        const conn = await db();
+        const collection = await conn.collection('todos');
+
+        const result = await collection.insert(data);
+        conn.close();
+
+        console.log(result);
+        res.json(data);
+
+    } catch (err) {
+        next(err);
+    }
 });
 
 api.use((req, res, next) => {
@@ -55,8 +107,13 @@ api.use((err, req, res, next) => {
 
 const web = express.Router();
 
-web.get('/', (req, res, next) => {
-    res.render('index', {title: 'Hello World!'});
+web.get('/', async (req, res, next) => {
+    try {
+        const todos = await findAll();
+        res.render('index', {todos});
+    } catch(err) {
+        next(err);
+    }
 });
 
 web.use((req, res, next) => {
@@ -70,5 +127,6 @@ web.use((err, req, res, next) => {
 });
 
 
+app.use('/assets', express.static(__dirname+'/public'));
 app.use('/api', api);
 app.use('/', web);
