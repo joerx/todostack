@@ -1,12 +1,19 @@
 version: '3.3'
 
 services:
+  nginx:
+    image: nginx:1.13-alpine
+    volumes:
+      - ./conf:/etc/nginx/conf.d
+      - ./public:/public/assets
+    links:
+      - app
+    ports:
+      - 8000:80
   app:
     build: .
     volumes:
       - .:/src
-    ports:
-      - 3000:3000
     links:
       - mongodb
     # command: ["sh", "-c", "sleep 10000"]
