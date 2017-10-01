@@ -4,5 +4,5 @@ root = true
 indent_size = 4
 indent_style = space
 
-[*.{hbs,html,yml}]
+[*.{hbs,html,yml,tf}]
 indent_size = 2

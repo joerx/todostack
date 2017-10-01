@@ -57,3 +57,6 @@ typings/
 # dotenv environment variables file
 .env
 
+# Terraform things
+terraform.tfvars
+.terraform
