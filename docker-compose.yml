@@ -16,7 +16,6 @@ services:
       - .:/src
     links:
       - mongodb
-    # command: ["sh", "-c", "sleep 10000"]
     command: ["nodemon", "server", "--port", "3000", "--mongo", "mongodb://mongodb:27017/todos"]
   mongodb:
     image: mongo:3.0
